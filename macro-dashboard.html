@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Macro · Swing Trader | USD Ciclo: Débil/Transición</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f4;
+      --bg-tertiary: #f0efea;
+      --text-primary: #1c1c1a;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #9c9b96;
+      --border: rgba(28,28,26,0.12);
+      --border-md: rgba(28,28,26,0.22);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-sans: 'IBM Plex Sans', sans-serif;
+      --green-50: #EAF3DE; --green-400: #639922; --green-600: #3B6D11; --green-800: #27500A;
+      --red-50: #FCEBEB; --red-400: #E24B4A; --red-600: #A32D2D; --red-800: #791F1F;
+      --amber-50: #FAEEDA; --amber-400: #EF9F27; --amber-600: #854F0B; --amber-800: #633806;
+      --blue-50: #E6F1FB; --blue-400: #378ADD; --blue-600: #185FA5; --blue-800: #0C447C;
+      --gray-50: #F1EFE8; --gray-400: #888780; --gray-600: #5F5E5A; --gray-800: #444441;
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1c1c1a;
+      --bg-secondary: #252523;
+      --bg-tertiary: #2e2e2b;
+      --text-primary: #f0efea;
+      --text-secondary: #a8a7a2;
+      --text-tertiary: #6e6d69;
+      --border: rgba(240,239,234,0.1);
+      --border-md: rgba(240,239,234,0.2);
+      --green-50: #173404; --green-800: #C0DD97;
+      --red-50: #501313; --red-800: #F7C1C1;
+      --amber-50: #412402; --amber-800: #FAC775;
+      --blue-50: #042C53; --blue-800: #B5D4F4;
+      --gray-50: #2C2C2A; --gray-800: #D3D1C7;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ── Layout ── */
+    .dash { max-width: 1200px; margin: 0 auto; padding: 20px 16px 40px; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+      margin-bottom: 16px; padding-bottom: 14px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .top-bar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .brand {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.08em; color: var(--text-secondary); text-transform: uppercase;
+    }
+    .cb {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: var(--radius-sm);
+      font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+    }
+    .cb-weak  { background: var(--red-50);   color: var(--red-800);   border: 0.5px solid var(--red-400); }
+    .cb-on    { background: var(--green-50); color: var(--green-800); border: 0.5px solid var(--green-400); }
+    .cb-rebuild { background: var(--blue-50); color: var(--blue-800); border: 0.5px solid var(--blue-400); }
+    .cb-consol  { background: var(--amber-50); color: var(--amber-800); border: 0.5px solid var(--amber-400); }
+    .cdot {
+      width: 5px; height: 5px; border-radius: 50%; background: currentColor;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .ts { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); }
+    .top-bar-right { display: flex; align-items: center; gap: 8px; }
+    .icon-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: var(--radius-sm);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+      border: 0.5px solid var(--border-md); background: var(--bg-secondary);
+      color: var(--text-secondary); cursor: pointer; font-family: var(--font-mono);
+      transition: background 0.15s, color 0.15s;
+    }
+    .icon-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
+
+    /* ── Grids ── */
+    .g4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 10px; }
+    .g3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 10px; }
+    .g2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-bottom: 10px; }
+    @media (max-width: 900px) { .g4 { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 640px) { .g4,.g3,.g2 { grid-template-columns: 1fr; } }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-primary); border: 0.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 12px 14px;
+    }
+    .ch {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .ch i { font-size: 13px; }
+    .mv { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--text-primary); line-height: 1; }
+    .ms { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+    .md { font-family: var(--font-mono); font-size: 11px; margin-top: 6px; }
+    .up { color: var(--green-600); }
+    .dn { color: var(--red-600); }
+    .nt { color: var(--gray-600); }
+
+    /* ── Badges ── */
+    .sb { font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 500; white-space: nowrap; }
+    .bear    { background: var(--red-50);   color: var(--red-800); }
+    .bull    { background: var(--green-50); color: var(--green-800); }
+    .warn    { background: var(--amber-50); color: var(--amber-800); }
+    .flat    { background: var(--gray-50);  color: var(--gray-800); }
+    .info-b  { background: var(--blue-50);  color: var(--blue-800); }
+
+    /* ── Signal rows ── */
+    .sr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 0; border-bottom: 0.5px solid var(--border);
+    }
+    .sr:last-child { border-bottom: none; }
+    .sl { font-size: 12px; color: var(--text-secondary); }
+    .sv { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-primary); }
+
+    /* ── Phase bar ── */
+    .phase-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 6px; margin-bottom: 14px;
+    }
+    .pb {
+      border-radius: var(--radius-md); padding: 8px 6px; text-align: center;
+      border: 0.5px solid var(--border); background: var(--bg-secondary); position: relative;
+    }
+    .pb.active { border-color: var(--red-400); background: var(--red-50); }
+    .pb.active .pn { color: var(--red-800); }
+    .pnum { font-family: var(--font-mono); font-size: 9px; color: var(--text-tertiary); margin-bottom: 3px; }
+    .pn { font-size: 10px; font-weight: 500; color: var(--text-secondary); line-height: 1.35; }
+    .par { position: absolute; bottom: -11px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--red-400); }
+
+    /* ── Risk strip ── */
+    .risk-strip { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 10px; }
+    @media (max-width: 640px) { .risk-strip { grid-template-columns: 1fr; } }
+    .rc { border-radius: var(--radius-md); padding: 12px 14px; border: 0.5px solid; }
+    .rc-on      { background: var(--green-50); border-color: var(--green-400); }
+    .rc-rebuild { background: var(--blue-50);  border-color: var(--blue-400); }
+    .rc-consol  { background: var(--amber-50); border-color: var(--amber-400); }
+    .rc-title { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+    .rc-on .rc-title      { color: var(--green-600); }
+    .rc-rebuild .rc-title { color: var(--blue-600); }
+    .rc-consol .rc-title  { color: var(--amber-600); }
+    .rc-val { font-family: var(--font-mono); font-size: 15px; font-weight: 500; line-height: 1.2; }
+    .rc-on .rc-val      { color: var(--green-800); }
+    .rc-rebuild .rc-val { color: var(--blue-800); }
+    .rc-consol .rc-val  { color: var(--amber-800); }
+    .rc-sub { font-size: 10px; margin-top: 4px; line-height: 1.45; }
+    .rc-on .rc-sub      { color: var(--green-600); }
+    .rc-rebuild .rc-sub { color: var(--blue-600); }
+    .rc-consol .rc-sub  { color: var(--amber-600); }
+    .rc-meter { margin-top: 8px; height: 5px; border-radius: 3px; overflow: hidden; background: rgba(0,0,0,0.08); }
+    .rc-fill { height: 100%; border-radius: 3px; }
+    .rc-on .rc-fill      { background: var(--green-400); }
+    .rc-rebuild .rc-fill { background: var(--blue-400); }
+    .rc-consol .rc-fill  { background: var(--amber-400); }
+    .rc-labels { display: flex; justify-content: space-between; margin-top: 3px; font-size: 9px; font-family: var(--font-mono); }
+    .rc-on .rc-labels      { color: var(--green-600); }
+    .rc-rebuild .rc-labels { color: var(--blue-600); }
+    .rc-consol .rc-labels  { color: var(--amber-600); }
+
+    /* ── Régimen detail ── */
+    .risk-detail { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 10px; }
+    .rd-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+    @media (max-width: 640px) { .rd-grid { grid-template-columns: repeat(2,1fr); } }
+    .rd-item { text-align: center; padding: 8px 6px; border-radius: var(--radius-sm); background: var(--bg-secondary); border: 0.5px solid var(--border); }
+    .rd-label { font-size: 9px; color: var(--text-tertiary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+    .rd-val { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .rd-trend { font-size: 10px; margin-top: 2px; }
+
+    /* ── TradingView ── */
+    .tv-wrap { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 10px; }
+    .tv-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 10px 14px; border-bottom: 0.5px solid var(--border); }
+    .tv-title { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+    .live-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 500; font-family: var(--font-mono); background: var(--green-50); color: var(--green-800); border: 0.5px solid var(--green-400); }
+    .tv-controls { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tv-btn { padding: 3px 10px; border-radius: 3px; font-size: 10px; font-weight: 500; border: 0.5px solid var(--border-md); background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; font-family: var(--font-mono); transition: all 0.15s; }
+    .tv-btn:hover, .tv-btn.active { background: var(--bg-primary); color: var(--text-primary); border-color: var(--text-tertiary); }
+    #tv-container { width: 100%; height: 420px; }
+    #tv-container iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    /* ── Correlaciones ── */
+    .corr-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 0.5px solid var(--border); }
+    .corr-row:last-child { border-bottom: none; }
+    .cp { font-family: var(--font-mono); font-size: 11px; color: var(--text-primary); min-width: 60px; }
+    .cbw { flex: 1; height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+    .cbr { height: 100%; border-radius: 3px; }
+    .cv { font-family: var(--font-mono); font-size: 11px; min-width: 44px; text-align: right; }
+
+    /* ── Fed ── */
+    .fed-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--border); }
+    .fed-row:last-child { border-bottom: none; }
+    .fd { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .fn { font-size: 12px; color: var(--text-primary); flex: 1; }
+    .fs { font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: 500; }
+    .dovish    { background: var(--green-50); color: var(--green-800); }
+    .neutral-s { background: var(--gray-50);  color: var(--gray-800); }
+
+    /* ── Countdown ── */
+    .cd-row { display: flex; gap: 7px; justify-content: center; align-items: center; margin-top: 6px; }
+    .cdb { background: var(--bg-secondary); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px 10px; text-align: center; }
+    .cdn { font-family: var(--font-mono); font-size: 18px; font-weight: 500; color: var(--text-primary); line-height: 1; }
+    .cdu { font-size: 9px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Eventos ── */
+    .ev-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid var(--border); }
+    .ev-row:last-child { border-bottom: none; }
+    .evd { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); min-width: 44px; }
+    .evn { font-size: 12px; color: var(--text-primary); flex: 1; line-height: 1.4; }
+    .evi { font-size: 9px; padding: 2px 6px; border-radius: 2px; font-weight: 500; align-self: center; white-space: nowrap; }
+    .hi { background: var(--red-50);   color: var(--red-800); }
+    .mi { background: var(--amber-50); color: var(--amber-800); }
+
+    /* ── Escenarios ── */
+    .sc-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+    @media (max-width: 640px) { .sc-grid { grid-template-columns: 1fr; } }
+    .scc { border-radius: var(--radius-md); padding: 10px 12px; border: 0.5px solid; }
+    .sc-b { background: var(--green-50); border-color: #97C459; }
+    .sc-n { background: var(--blue-50);  border-color: #85B7EB; }
+    .sc-r { background: var(--red-50);   border-color: #F09595; }
+    .sclabel { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+    .sc-b .sclabel { color: var(--green-800); }
+    .sc-n .sclabel { color: var(--blue-800); }
+    .sc-r .sclabel { color: var(--red-800); }
+    .scprice { font-family: var(--font-mono); font-size: 15px; font-weight: 500; }
+    .sc-b .scprice { color: var(--green-800); }
+    .sc-n .scprice { color: var(--blue-800); }
+    .sc-r .scprice { color: var(--red-800); }
+    .scprob { font-size: 10px; margin-top: 3px; }
+    .sc-b .scprob { color: var(--green-600); }
+    .sc-n .scprob { color: var(--blue-600); }
+    .sc-r .scprob { color: var(--red-600); }
+    .sctrig { font-size: 10px; margin-top: 4px; line-height: 1.45; }
+    .sc-b .sctrig { color: var(--green-600); }
+    .sc-n .sctrig { color: var(--blue-600); }
+    .sc-r .sctrig { color: var(--red-600); }
+
+    /* ── Conclusión ── */
+    .concl { margin-top: 8px; padding: 10px; border-radius: var(--radius-sm); background: var(--green-50); border: 0.5px solid #97C459; }
+    .concl-title { font-size: 10px; font-weight: 500; color: var(--green-800); margin-bottom: 3px; }
+    .concl-text { font-size: 11px; color: var(--green-600); line-height: 1.55; }
+
+    /* ── Misc ── */
+    .divider { height: 0.5px; background: var(--border); margin: 14px 0; }
+    .sec { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .stacked { display: flex; flex-direction: column; gap: 10px; }
+  </style>
+</head>
+<body>
+<div class="dash">
+
+  <!-- ── Top bar ── -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="brand"><i class="ti ti-chart-line" aria-hidden="true"></i> Panel macro</span>
+      <span class="cb cb-weak"><span class="cdot"></span>Dólar: débil / transición</span>
+      <span class="cb cb-on"><span class="cdot"></span>Riesgo: activo</span>
+      <span class="cb cb-rebuild"><span class="cdot"></span>Apetito: reconstruyéndose</span>
+      <span class="cb cb-consol"><span class="cdot"></span>Vol: consolidando</span>
+    </div>
+    <div class="top-bar-right">
+      <span class="ts" id="ltime">—</span>
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">
+        <i class="ti ti-sun" aria-hidden="true" id="themeIcon"></i>
+        <span id="themeTxt">Oscuro</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Fases del ciclo ── -->
+  <div class="phase-grid">
+    <div class="pb"><div class="pnum">01</div><div class="pn">Dólar fuerte<br>Oro bajista</div></div>
+    <div class="pb"><div class="pnum">02</div><div class="pn">Tasa pico<br>Meseta</div></div>
+    <div class="pb active"><div class="pnum">03</div><div class="pn">Dólar débil<br>Transición</div><span class="par">▼</span></div>
+    <div class="pb"><div class="pnum">04</div><div class="pn">Ciclo de<br>recortes</div></div>
+    <div class="pb"><div class="pnum">05</div><div class="pn">Dólar bajista<br>Oro alcista</div></div>
+  </div>
+
+  <!-- ── Régimen de riesgo ── -->
+  <div class="sec" style="margin-top:4px"><i class="ti ti-shield-check" aria-hidden="true"></i>Régimen de riesgo — lectura actual</div>
+  <div class="risk-strip">
+    <div class="rc rc-on">
+      <div class="rc-title"><i class="ti ti-flame" aria-hidden="true" style="font-size:11px;margin-right:3px"></i>Régimen de riesgo</div>
+      <div class="rc-val">Riesgo activo</div>
+      <div class="rc-sub">Flujos hacia activos de riesgo. SPX, commodities y EM con entrada de capital. Oro apoyado por debilidad del dólar.</div>
+      <div class="rc-meter"><div class="rc-fill" style="width:72%"></div></div>
+      <div class="rc-labels"><span>Aversión</span><span>72%</span><span>Apetito</span></div>
+    </div>
+    <div class="rc rc-rebuild">
+      <div class="rc-title"><i class="ti ti-heart-rate-monitor" aria-hidden="true" style="font-size:11px;margin-right:3px"></i>Apetito de mercado</div>
+      <div class="rc-val">Reconstruyéndose</div>
+      <div class="rc-sub">Confianza recuperándose desde mínimos. Posiciones largas rearmándose tras liquidación reciente.</div>
+      <div class="rc-meter"><div class="rc-fill" style="width:55%"></div></div>
+      <div class="rc-labels"><span>Temor</span><span>55%</span><span>Codicia</span></div>
+    </div>
+    <div class="rc rc-consol">
+      <div class="rc-title"><i class="ti ti-wave-sine" aria-hidden="true" style="font-size:11px;margin-right:3px"></i>Régimen de volatilidad</div>
+      <div class="rc-val">Consolidando</div>
+      <div class="rc-sub">VIX comprimido post-pico. Opciones priceando rango estrecho. Momento favorable para swing entries.</div>
+      <div class="rc-meter"><div class="rc-fill" style="width:38%"></div></div>
+      <div class="rc-labels"><span>Baja vol</span><span>38%</span><span>Alta vol</span></div>
+    </div>
+  </div>
+
+  <!-- ── Indicadores de régimen ── -->
+  <div class="risk-detail">
+    <div class="ch"><i class="ti ti-radar" aria-hidden="true"></i>Indicadores de régimen</div>
+    <div class="rd-grid">
+      <div class="rd-item"><div class="rd-label">VIX</div><div class="rd-val">18.4</div><div class="rd-trend dn">▼ desde 35</div></div>
+      <div class="rd-item"><div class="rd-label">VIX / VIX3M</div><div class="rd-val">0.92</div><div class="rd-trend nt">contango</div></div>
+      <div class="rd-item"><div class="rd-label">Put/Call ratio</div><div class="rd-val">0.78</div><div class="rd-trend up">normaliz.</div></div>
+      <div class="rd-item"><div class="rd-label">HY spreads</div><div class="rd-val">312 pb</div><div class="rd-trend dn">▼ comprim.</div></div>
+      <div class="rd-item"><div class="rd-label">MOVE index</div><div class="rd-val">98.2</div><div class="rd-trend dn">▼ cayendo</div></div>
+      <div class="rd-item"><div class="rd-label">SPX vs 200MA</div><div class="rd-val">+2.1%</div><div class="rd-trend up">por encima</div></div>
+      <div class="rd-item"><div class="rd-label">Cobre/Oro ratio</div><div class="rd-val">0.182</div><div class="rd-trend dn">▼ débil</div></div>
+      <div class="rd-item"><div class="rd-label">USD/JPY carry</div><div class="rd-val">145.2</div><div class="rd-trend dn">▼ risk off?</div></div>
+    </div>
+  </div>
+
+  <!-- ── Métricas principales ── -->
+  <div class="g4">
+    <div class="card">
+      <div class="ch"><i class="ti ti-currency-dollar" aria-hidden="true"></i>DXY</div>
+      <div class="mv">99.84</div>
+      <div class="ms">Índice dólar</div>
+      <div class="md dn">▼ −1.23% semana</div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-trending-up" aria-hidden="true"></i>Fed Funds</div>
+      <div class="mv">4.25%</div>
+      <div class="ms">Tasa actual</div>
+      <div class="md nt">sin cambio</div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-chart-candle" aria-hidden="true"></i>Bono 10Y EE.UU.</div>
+      <div class="mv">4.38%</div>
+      <div class="ms">Rendimiento</div>
+      <div class="md dn">▼ −0.12 bps</div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-activity" aria-hidden="true"></i>Rendim. reales</div>
+      <div class="mv">1.82%</div>
+      <div class="ms">TIPS 10Y</div>
+      <div class="md dn">▼ cayendo</div>
+    </div>
+  </div>
+
+  <!-- ── Gráfico TradingView ── -->
+  <div class="tv-wrap">
+    <div class="tv-header">
+      <div class="tv-title">
+        <i class="ti ti-coin" aria-hidden="true"></i>
+        XAU/USD — Gráfico en tiempo real
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="live-badge"><span class="cdot"></span>En vivo · TradingView</div>
+        <div class="tv-controls">
+          <button class="tv-btn" onclick="setTVInterval('1')">1m</button>
+          <button class="tv-btn" onclick="setTVInterval('60')">1h</button>
+          <button class="tv-btn active" onclick="setTVInterval('D')">1D</button>
+          <button class="tv-btn" onclick="setTVInterval('W')">1S</button>
+        </div>
+      </div>
+    </div>
+    <div id="tv-container"></div>
+  </div>
+
+  <!-- ── Macro + Fed ── -->
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><i class="ti ti-dashboard" aria-hidden="true"></i>Indicadores macro clave</div>
+      <div class="sr"><span class="sl">Solicitudes desempleo</span><span class="sv">241K</span><span class="sb warn">Alerta</span></div>
+      <div class="sr"><span class="sl">NFP mensual</span><span class="sv">+177K</span><span class="sb bear">Débil</span></div>
+      <div class="sr"><span class="sl">IPC interanual</span><span class="sv">2.4%</span><span class="sb bull">Bajando</span></div>
+      <div class="sr"><span class="sl">PCE subyacente</span><span class="sv">2.6%</span><span class="sb warn">Elevado</span></div>
+      <div class="sr"><span class="sl">ISM manufacturero</span><span class="sv">48.7</span><span class="sb bear">Contracción</span></div>
+      <div class="sr"><span class="sl">Confianza U. Michigan</span><span class="sv">52.2</span><span class="sb bear">Muy bajo</span></div>
+      <div class="sr"><span class="sl">Ventas minoristas</span><span class="sv">+0.1%</span><span class="sb warn">Suave</span></div>
+      <div class="sr"><span class="sl">PIB trimestral</span><span class="sv">−0.3%</span><span class="sb bear">Contracción</span></div>
+    </div>
+
+    <div class="stacked">
+      <div class="card">
+        <div class="ch"><i class="ti ti-speakerphone" aria-hidden="true"></i>Fed speakers — tono</div>
+        <div class="fed-row"><div class="fd" style="background:#E24B4A"></div><span class="fn">Waller</span><span class="fs dovish">Paloma</span></div>
+        <div class="fed-row"><div class="fd" style="background:#888780"></div><span class="fn">Barkin</span><span class="fs neutral-s">Neutral</span></div>
+        <div class="fed-row"><div class="fd" style="background:#639922"></div><span class="fn">Daly</span><span class="fs dovish">Paloma</span></div>
+        <div class="fed-row"><div class="fd" style="background:#BA7517"></div><span class="fn">Kugler</span><span class="fs neutral-s">Neutral</span></div>
+        <div class="fed-row"><div class="fd" style="background:#378ADD"></div><span class="fn">Powell</span><span class="fs neutral-s">Esperar y ver</span></div>
+        <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:10px;color:var(--text-secondary)">Balance Fed</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:80px;height:6px;background:var(--bg-secondary);border-radius:3px;overflow:hidden">
+              <div style="width:65%;height:100%;background:#639922;border-radius:3px"></div>
+            </div>
+            <span style="font-size:10px;font-family:var(--font-mono);color:var(--green-600)">Paloma 65%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><i class="ti ti-calendar-event" aria-hidden="true"></i>Próxima reunión FOMC</div>
+        <div style="text-align:center;padding:4px 0">
+          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">18 junio 2025</div>
+          <div class="cd-row">
+            <div class="cdb"><div class="cdn" id="cd-d">—</div><div class="cdu">días</div></div>
+            <div class="cdb"><div class="cdn" id="cd-h">—</div><div class="cdu">hrs</div></div>
+            <div class="cdb"><div class="cdn" id="cd-m">—</div><div class="cdu">min</div></div>
+          </div>
+          <div style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">
+            <span style="font-size:10px;color:var(--text-secondary)">CME FedWatch — recorte:</span>
+            <span style="font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--green-600)">68%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── Correlaciones ── -->
+  <div class="sec"><i class="ti ti-arrows-exchange" aria-hidden="true"></i>Correlaciones — ciclo dólar débil</div>
+  <div class="g2">
+    <div class="card">
+      <div class="corr-row"><span class="cp">XAU/USD</span><div class="cbw"><div class="cbr" style="width:88%;background:#A32D2D"></div></div><span class="cv dn">−0.88</span></div>
+      <div class="corr-row"><span class="cp">EUR/USD</span><div class="cbw"><div class="cbr" style="width:76%;background:#A32D2D"></div></div><span class="cv dn">−0.76</span></div>
+      <div class="corr-row"><span class="cp">GBP/USD</span><div class="cbw"><div class="cbr" style="width:71%;background:#A32D2D"></div></div><span class="cv dn">−0.71</span></div>
+      <div class="corr-row"><span class="cp">USD/JPY</span><div class="cbw"><div class="cbr" style="width:82%;background:#27500A"></div></div><span class="cv up">+0.82</span></div>
+      <div class="corr-row"><span class="cp">USD/CHF</span><div class="cbw"><div class="cbr" style="width:79%;background:#27500A"></div></div><span class="cv up">+0.79</span></div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-calendar" aria-hidden="true"></i>Calendario — próximos eventos</div>
+      <div class="ev-row"><span class="evd">May 12</span><span class="evn">IPC Estados Unidos</span><span class="evi hi">Alto</span></div>
+      <div class="ev-row"><span class="evd">May 13</span><span class="evn">IPP + Ventas minoristas</span><span class="evi hi">Alto</span></div>
+      <div class="ev-row"><span class="evd">May 15</span><span class="evn">Confianza U. Michigan</span><span class="evi hi">Alto</span></div>
+      <div class="ev-row"><span class="evd">May 16</span><span class="evn">Solicitudes desempleo</span><span class="evi mi">Medio</span></div>
+      <div class="ev-row"><span class="evd">May 20</span><span class="evn">Minutas Fed</span><span class="evi hi">Alto</span></div>
+      <div class="ev-row"><span class="evd">May 22</span><span class="evn">Discurso Powell</span><span class="evi hi">Alto</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── Escenarios ── -->
+  <div class="sec"><i class="ti ti-target" aria-hidden="true"></i>Escenarios swing — XAU/USD</div>
+  <div class="sc-grid">
+    <div class="scc sc-b">
+      <div class="sclabel">Alcista</div>
+      <div class="scprice">3,420 – 3,500</div>
+      <div class="scprob">Prob: 35%</div>
+      <div class="sctrig">Fed paloma + datos débiles + recorte junio confirmado</div>
+    </div>
+    <div class="scc sc-n">
+      <div class="sclabel">Base</div>
+      <div class="scprice">3,280 – 3,380</div>
+      <div class="scprob">Prob: 45%</div>
+      <div class="sctrig">Fed espera, DXY lateral, oro consolida rango</div>
+    </div>
+    <div class="scc sc-r">
+      <div class="sclabel">Bajista</div>
+      <div class="scprice">3,100 – 3,200</div>
+      <div class="scprob">Prob: 20%</div>
+      <div class="sctrig">Datos laborales fuertes, Powell halcón, rebote DXY</div>
+    </div>
+  </div>
+
+  <!-- ── Señales de entrada ── -->
+  <div class="card">
+    <div class="ch"><i class="ti ti-traffic-lights" aria-hidden="true"></i>Señales de entrada — sesgo actual</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:10px">
+      <div>
+        <div class="sl" style="font-size:11px;margin-bottom:4px">Sesgo XAU</div>
+        <div class="sv" style="font-size:14px;margin-bottom:4px">Largo</div>
+        <span class="sb bull">Activo</span>
+      </div>
+      <div>
+        <div class="sl" style="font-size:11px;margin-bottom:4px">DXY momentum</div>
+        <div class="sv" style="font-size:14px;margin-bottom:4px">Bajista</div>
+        <span class="sb bear">Confirma</span>
+      </div>
+      <div>
+        <div class="sl" style="font-size:11px;margin-bottom:4px">Riesgo activo</div>
+        <div class="sv" style="font-size:14px;margin-bottom:4px">Sí</div>
+        <span class="sb bull">Apoya largo</span>
+      </div>
+      <div>
+        <div class="sl" style="font-size:11px;margin-bottom:4px">Soporte clave</div>
+        <div class="sv" style="font-size:14px;margin-bottom:4px">3,200</div>
+        <span class="sb flat">Nivel</span>
+      </div>
+      <div>
+        <div class="sl" style="font-size:11px;margin-bottom:4px">Resistencia</div>
+        <div class="sv" style="font-size:14px;margin-bottom:4px">3,500</div>
+        <span class="sb flat">Nivel</span>
+      </div>
+      <div>
+        <div class="sl" style="font-size:11px;margin-bottom:4px">Stop swing</div>
+        <div class="sv" style="font-size:14px;margin-bottom:4px">3,155</div>
+        <span class="sb bear">Riesgo</span>
+      </div>
+    </div>
+    <div class="concl">
+      <div class="concl-title">Conclusión operativa</div>
+      <div class="concl-text">Ciclo dólar débil + riesgo activo + apetito reconstruyéndose = confluencia alcista XAU. Vol consolidando ofrece entrada favorable. Esperar pullback a 3,240–3,280 para entrada. Catalizador: IPC suave o datos de empleo débiles.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ── Reloj UTC ── */
+  const lEl = document.getElementById('ltime');
+  function updateTime() {
+    const n = new Date();
+    lEl.textContent = n.toUTCString().replace('GMT','UTC').slice(0,-4);
+  }
+  updateTime(); setInterval(updateTime, 1000);
+
+  /* ── Countdown FOMC ── */
+  const fomc = new Date('2025-06-18T14:00:00Z');
+  function updateCountdown() {
+    const diff = fomc - new Date();
+    if (diff <= 0) return;
+    document.getElementById('cd-d').textContent = Math.floor(diff / 86400000);
+    document.getElementById('cd-h').textContent = Math.floor((diff % 86400000) / 3600000);
+    document.getElementById('cd-m').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+  }
+  updateCountdown(); setInterval(updateCountdown, 60000);
+
+  /* ── Tema oscuro/claro ── */
+  let isDark = false;
+  let currentInterval = 'D';
+
+  function toggleTheme() {
+    isDark = !isDark;
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+    document.getElementById('themeTxt').textContent = isDark ? 'Claro' : 'Oscuro';
+    document.getElementById('themeIcon').className = isDark ? 'ti ti-moon' : 'ti ti-sun';
+    buildTV(currentInterval);
+  }
+
+  /* ── TradingView ── */
+  function buildTV(interval) {
+    currentInterval = interval;
+    const container = document.getElementById('tv-container');
+    container.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    const theme = isDark ? 'dark' : 'light';
+    iframe.src = `https://s.tradingview.com/widgetembed/?symbol=XAUUSD&interval=${interval}&hidesidetoolbar=1&hidetoptoolbar=0&symboledit=0&saveimage=0&studies=[]&theme=${theme}&style=1&timezone=America%2FNew_York&withdateranges=1&locale=es`;
+    iframe.style.cssText = 'width:100%;height:420px;border:none;display:block';
+    iframe.setAttribute('allowfullscreen', '');
+    container.appendChild(iframe);
+
+    document.querySelectorAll('.tv-btn').forEach(btn => btn.classList.remove('active'));
+    const labels = {'1':'1m','60':'1h','D':'1D','W':'1S'};
+    document.querySelectorAll('.tv-btn').forEach(btn => {
+      if (btn.textContent.trim() === labels[interval]) btn.classList.add('active');
+    });
+  }
+
+  function setTVInterval(iv) { buildTV(iv); }
+
+  buildTV('D');
+</script>
+</body>
+</html>
