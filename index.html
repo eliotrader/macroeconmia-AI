@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Terminal Macro Institucional Oro</title>
+  <title>Institutional Gold Macro Terminal</title>
 
-  <!-- TAILWIND -->
-
+  <!-- TAILWIND CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- TRADINGVIEW -->
-
   <script src="https://s3.tradingview.com/tv.js"></script>
 
   <style>
@@ -40,14 +37,6 @@
       border-radius:20px;
     }
 
-    .background-grid{
-      background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-
-      background-size:40px 40px;
-    }
-
     .gold{
       color:#d4af37;
     }
@@ -67,7 +56,7 @@
     .glass{
       background:rgba(255,255,255,0.03);
       border:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(12px);
+      backdrop-filter:blur(10px);
     }
 
     .panel{
@@ -77,8 +66,8 @@
     }
 
     .panel:hover{
-      transform:translateY(-2px);
       border:1px solid rgba(212,175,55,0.25);
+      transform:translateY(-2px);
     }
 
     .glow{
@@ -87,7 +76,7 @@
 
     .ticker{
       white-space:nowrap;
-      animation:ticker 25s linear infinite;
+      animation:ticker 22s linear infinite;
     }
 
     @keyframes ticker{
@@ -129,7 +118,7 @@
     .heatbar{
       width:100%;
       height:8px;
-      background:#1a1a1a;
+      background:#1b1b1b;
       border-radius:20px;
       overflow:hidden;
     }
@@ -137,6 +126,14 @@
     .heatfill{
       height:100%;
       border-radius:20px;
+    }
+
+    .background-grid{
+      background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+
+      background-size:40px 40px;
     }
 
   </style>
@@ -149,16 +146,16 @@
 
   <!-- HEADER -->
 
-  <header class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-8">
+  <header class="flex flex-col xl:flex-row justify-between gap-6 items-start xl:items-center mb-8">
 
     <div>
 
       <h1 class="text-5xl font-bold gold">
-        TERMINAL MACRO ORO
+        GOLD MACRO TERMINAL
       </h1>
 
       <p class="text-gray-400 mt-3 text-lg">
-        Dashboard Institucional de Narrativa Macro
+        Institutional AI Narrative Dashboard
       </p>
 
     </div>
@@ -168,11 +165,11 @@
       <div class="glass panel glow">
 
         <p class="text-gray-400 text-sm">
-          Sentimiento Institucional
+          Institutional Sentiment
         </p>
 
         <h2 id="sentiment" class="text-3xl font-bold green mt-2">
-          FUERTEMENTE ALCISTA
+          STRONG BULLISH
         </h2>
 
       </div>
@@ -180,7 +177,7 @@
       <div class="glass panel">
 
         <p class="text-gray-400 text-sm">
-          Narrativa FED
+          FED Narrative
         </p>
 
         <h2 class="text-2xl yellow font-bold mt-2">
@@ -192,11 +189,11 @@
       <div class="glass panel">
 
         <p class="text-gray-400 text-sm">
-          Riesgo Mercado
+          Market Risk
         </p>
 
         <h2 class="text-2xl red font-bold mt-2">
-          ALTO
+          HIGH
         </h2>
 
       </div>
@@ -209,36 +206,36 @@
 
   <div class="glass panel overflow-hidden mb-8">
 
-    <div class="ticker text-lg">
+    <div id="ticker" class="ticker text-lg">
 
-      ORO 3345.20 ▲ |
+      XAUUSD 3345.20 ▲ |
       DXY 101.22 ▼ |
       US10Y 4.21% ▲ |
       SP500 5602 ▼ |
       VIX 18.42 ▲ |
-      PETRÓLEO 78.22 ▲ |
+      OIL 78.22 ▲ |
       BTC 102554 ▲
 
     </div>
 
   </div>
 
-  <!-- GRID -->
+  <!-- MAIN GRID -->
 
   <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-    <!-- IZQUIERDA -->
+    <!-- LEFT -->
 
     <div class="xl:col-span-2 space-y-6">
 
-      <!-- MOTOR NARRATIVA -->
+      <!-- NARRATIVE -->
 
       <div class="glass panel glow">
 
         <div class="flex justify-between items-center mb-5">
 
           <h2 class="text-2xl font-bold gold">
-            Motor Narrativa Oro
+            Gold Narrative Engine
           </h2>
 
           <div class="flex items-center gap-2">
@@ -246,7 +243,7 @@
             <div class="live-dot"></div>
 
             <span class="green">
-              IA EN VIVO
+              LIVE AI
             </span>
 
           </div>
@@ -255,63 +252,63 @@
 
         <p id="narrative" class="text-gray-300 leading-8 text-lg">
 
-          Cargando narrativa institucional...
+          Loading institutional narrative...
 
         </p>
 
       </div>
 
-      <!-- TRADINGVIEW -->
+      <!-- TRADINGVIEW PRO -->
 
       <div class="glass panel">
 
         <div class="flex justify-between items-center mb-5">
 
           <h2 class="text-2xl font-bold gold">
-            Estructura Institucional XAUUSD
+            XAUUSD Institutional Structure
           </h2>
 
           <span class="text-gray-400">
-            MERCADO EN VIVO
+            LIVE MARKET
           </span>
 
         </div>
 
-        <div id="tradingview_chart" style="height:650px;"></div>
+        <div id="tradingview_chart" style="height:600px;"></div>
 
       </div>
 
-      <!-- MATRIZ -->
+      <!-- LOWER PANELS -->
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- CORRELACIONES -->
+        <!-- CORRELATIONS -->
 
         <div class="glass panel">
 
           <h2 class="text-xl font-bold gold mb-4">
-            Matriz Correlaciones
+            Correlation Matrix
           </h2>
 
           <div class="space-y-4">
 
             <div class="flex justify-between">
-              <span>ORO vs DXY</span>
+              <span>XAUUSD vs DXY</span>
               <span class="red">-0.88</span>
             </div>
 
             <div class="flex justify-between">
-              <span>ORO vs US10Y</span>
+              <span>XAUUSD vs US10Y</span>
               <span class="red">-0.71</span>
             </div>
 
             <div class="flex justify-between">
-              <span>ORO vs VIX</span>
+              <span>XAUUSD vs VIX</span>
               <span class="green">+0.64</span>
             </div>
 
             <div class="flex justify-between">
-              <span>ORO vs SP500</span>
+              <span>XAUUSD vs SP500</span>
               <span class="yellow">-0.21</span>
             </div>
 
@@ -324,29 +321,29 @@
         <div class="glass panel">
 
           <h2 class="text-xl font-bold gold mb-4">
-            Posicionamiento Institucional
+            Smart Money Positioning
           </h2>
 
           <div class="space-y-4">
 
             <div class="flex justify-between">
               <span>Hedge Funds</span>
-              <span class="green">Compradores</span>
+              <span class="green">Net Long</span>
             </div>
 
             <div class="flex justify-between">
-              <span>Comerciales</span>
-              <span class="red">Vendedores</span>
+              <span>Commercials</span>
+              <span class="red">Net Short</span>
             </div>
 
             <div class="flex justify-between">
-              <span>Flujo Institucional</span>
-              <span class="green">Acumulación</span>
+              <span>Institutional Flow</span>
+              <span class="green">Accumulation</span>
             </div>
 
             <div class="flex justify-between">
-              <span>Liquidez</span>
-              <span class="yellow">Moderada</span>
+              <span>Liquidity</span>
+              <span class="yellow">Moderate</span>
             </div>
 
           </div>
@@ -357,16 +354,16 @@
 
     </div>
 
-    <!-- DERECHA -->
+    <!-- RIGHT -->
 
     <div class="space-y-6">
 
-      <!-- HEATMAP -->
+      <!-- MACRO HEATMAP -->
 
       <div class="glass panel">
 
         <h2 class="text-2xl font-bold gold mb-5">
-          Heatmap Macro
+          Macro Heatmap
         </h2>
 
         <div class="space-y-5">
@@ -374,8 +371,8 @@
           <div>
 
             <div class="flex justify-between mb-2">
-              <span>Inflación</span>
-              <span class="green">Alcista</span>
+              <span>Inflation</span>
+              <span class="green">Bullish</span>
             </div>
 
             <div class="heatbar">
@@ -388,7 +385,7 @@
 
             <div class="flex justify-between mb-2">
               <span>DXY</span>
-              <span class="red">Bajista</span>
+              <span class="red">Bearish</span>
             </div>
 
             <div class="heatbar">
@@ -400,8 +397,8 @@
           <div>
 
             <div class="flex justify-between mb-2">
-              <span>Liquidez</span>
-              <span class="green">Expansiva</span>
+              <span>Liquidity</span>
+              <span class="green">Expanding</span>
             </div>
 
             <div class="heatbar">
@@ -413,7 +410,7 @@
           <div>
 
             <div class="flex justify-between mb-2">
-              <span>Bonos</span>
+              <span>Bond Yields</span>
               <span class="yellow">Neutral</span>
             </div>
 
@@ -427,12 +424,12 @@
 
       </div>
 
-      <!-- NOTICIAS -->
+      <!-- RESEARCH -->
 
       <div class="glass panel">
 
         <h2 class="text-2xl font-bold gold mb-5">
-          Noticias Macro en Vivo
+          Institutional Research Feed
         </h2>
 
         <div class="space-y-5">
@@ -442,18 +439,18 @@
             <div class="flex justify-between">
 
               <h3 class="green font-bold">
-                Reuters
+                JP Morgan
               </h3>
 
               <span class="text-gray-500 text-sm">
-                EN VIVO
+                LIVE
               </span>
 
             </div>
 
             <p class="text-gray-400 mt-2 text-sm leading-6">
 
-              Los mercados aumentan expectativas de futuros recortes de tasas.
+              Maintaining constructive outlook on gold amid global uncertainty.
 
             </p>
 
@@ -464,18 +461,18 @@
             <div class="flex justify-between">
 
               <h3 class="yellow font-bold">
-                Bloomberg
+                Goldman Sachs
               </h3>
 
               <span class="text-gray-500 text-sm">
-                EN VIVO
+                LIVE
               </span>
 
             </div>
 
             <p class="text-gray-400 mt-2 text-sm leading-6">
 
-              El oro continúa fortaleciéndose por incertidumbre geopolítica.
+              Treasury yields remain key drivers for precious metals.
 
             </p>
 
@@ -486,18 +483,18 @@
             <div class="flex justify-between">
 
               <h3 class="red font-bold">
-                FinancialJuice
+                BlackRock
               </h3>
 
               <span class="text-gray-500 text-sm">
-                EN VIVO
+                LIVE
               </span>
 
             </div>
 
             <p class="text-gray-400 mt-2 text-sm leading-6">
 
-              La FED mantiene presión sobre los mercados globales.
+              Risk management flows continue supporting defensive positioning.
 
             </p>
 
@@ -507,155 +504,61 @@
 
       </div>
 
-      <!-- MOTOR DXY -->
+      <!-- ECONOMIC CALENDAR -->
 
       <div class="glass panel">
 
         <h2 class="text-2xl font-bold gold mb-5">
-          Motor Dominancia DXY
+          AI Economic Calendar
         </h2>
 
-        <div class="space-y-4">
+        <div class="space-y-5">
 
-          <div class="flex justify-between">
-            <span>Tendencia Dólar</span>
-            <span class="red">Bajista</span>
+          <div class="border-l-4 border-yellow-500 pl-4">
+
+            <div class="flex justify-between">
+
+              <h3 class="font-bold">
+                CPI m/m
+              </h3>
+
+              <span class="yellow">
+                HIGH IMPACT
+              </span>
+
+            </div>
+
+            <p class="text-gray-400 text-sm mt-2 leading-6">
+
+              Higher inflation may strengthen the dollar and pressure gold.
+
+            </p>
+
           </div>
 
-          <div class="flex justify-between">
-            <span>Liquidez USD</span>
-            <span class="green">Expansiva</span>
-          </div>
+          <div class="border-l-4 border-green-500 pl-4">
 
-          <div class="flex justify-between">
-            <span>Presión FED</span>
-            <span class="yellow">Neutral</span>
-          </div>
+            <div class="flex justify-between">
 
-          <div class="flex justify-between">
-            <span>Impacto Oro</span>
-            <span class="green">Alcista</span>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- BONOS -->
-
-      <div class="glass panel">
-
-        <h2 class="text-2xl font-bold gold mb-5">
-          Motor Mercado Bonos
-        </h2>
-
-        <div class="space-y-4">
-
-          <div class="flex justify-between">
-            <span>US10Y</span>
-            <span class="red">4.21%</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span>Bono 2Y</span>
-            <span class="yellow">4.88%</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span>Curva Rendimientos</span>
-            <span class="green">Invertida</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span>Impacto Oro</span>
-            <span class="red">Presión Bajista</span>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- PROBABILIDAD -->
-
-      <div class="glass panel glow">
-
-        <h2 class="text-2xl font-bold gold mb-5">
-          Motor Probabilidad Oro
-        </h2>
-
-        <div class="space-y-6">
-
-          <div>
-
-            <div class="flex justify-between mb-2">
-
-              <span>Probabilidad Alcista</span>
+              <h3 class="font-bold">
+                FED SPEECH
+              </h3>
 
               <span class="green">
-                74%
+                MEDIUM IMPACT
               </span>
 
             </div>
 
-            <div class="heatbar">
-              <div class="heatfill bg-green-400 w-3/4"></div>
-            </div>
+            <p class="text-gray-400 text-sm mt-2 leading-6">
 
-          </div>
+              Dovish commentary could reinforce bullish momentum in XAUUSD.
 
-          <div>
-
-            <div class="flex justify-between mb-2">
-
-              <span>Probabilidad Bajista</span>
-
-              <span class="red">
-                26%
-              </span>
-
-            </div>
-
-            <div class="heatbar">
-              <div class="heatfill bg-red-400 w-1/4"></div>
-            </div>
+            </p>
 
           </div>
 
         </div>
-
-      </div>
-
-      <!-- FOREX FACTORY -->
-
-      <div class="glass panel">
-
-        <h2 class="text-2xl font-bold gold mb-5">
-          Calendario Forex Factory
-        </h2>
-
-        <iframe
-          src="https://www.forexfactory.com/calendar"
-          width="100%"
-          height="500"
-          style="border:none; border-radius:18px;"
-        ></iframe>
-
-      </div>
-
-      <!-- INVESTING -->
-
-      <div class="glass panel">
-
-        <h2 class="text-2xl font-bold gold mb-5">
-          Calendario Investing.com
-        </h2>
-
-        <iframe
-          src="https://www.investing.com/economic-calendar/"
-          width="100%"
-          height="500"
-          style="border:none; border-radius:18px;"
-        ></iframe>
 
       </div>
 
@@ -670,20 +573,20 @@
 <script>
 
   // =========================
-  // NARRATIVAS IA
+  // AI NARRATIVE ENGINE
   // =========================
 
   const narratives = [
 
-    "El oro continúa fortaleciéndose mientras los mercados aumentan expectativas de futuros recortes de tasas.",
+    "Gold strengthens as institutional investors rotate into safe haven assets amid geopolitical tensions and falling Treasury yields.",
 
-    "Los inversionistas institucionales continúan refugiándose en el oro debido a la incertidumbre macroeconómica global.",
+    "XAUUSD remains supported while traders increase expectations of future Federal Reserve rate cuts.",
 
-    "La caída del dólar favorece el impulso alcista del oro en mercados internacionales.",
+    "Institutional flows continue favoring precious metals due to global macroeconomic uncertainty.",
 
-    "El aumento de tensiones geopolíticas mantiene demanda institucional sobre activos refugio.",
+    "Gold prices stabilize while markets monitor inflation data and Treasury bond volatility.",
 
-    "Los bonos del Tesoro continúan generando presión sobre el comportamiento del oro."
+    "Safe haven demand continues supporting gold as recession fears rise across global markets."
 
   ];
 
@@ -692,25 +595,24 @@
     const random =
       narratives[Math.floor(Math.random() * narratives.length)];
 
-    document.getElementById("narrative").innerHTML =
-      random;
+    document.getElementById("narrative").innerHTML = random;
 
   }
 
   updateNarrative();
 
-  setInterval(updateNarrative, 10000);
+  setInterval(updateNarrative, 12000);
 
   // =========================
-  // SENTIMIENTO
+  // SENTIMENT ROTATION
   // =========================
 
   const sentiments = [
 
-    "FUERTEMENTE ALCISTA",
-    "ALCISTA",
+    "STRONG BULLISH",
+    "BULLISH",
     "NEUTRAL",
-    "BAJISTA"
+    "BEARISH"
 
   ];
 
@@ -721,18 +623,16 @@
     sentimentIndex++;
 
     if(sentimentIndex >= sentiments.length){
-
       sentimentIndex = 0;
-
     }
 
     document.getElementById("sentiment").innerHTML =
       sentiments[sentimentIndex];
 
-  },8000);
+  },9000);
 
   // =========================
-  // TRADINGVIEW
+  // TRADINGVIEW PRO CHART
   // =========================
 
   new TradingView.widget({
@@ -749,7 +649,7 @@
 
     "style": "1",
 
-    "locale": "es",
+    "locale": "en",
 
     "toolbar_bg": "#050505",
 
@@ -773,6 +673,13 @@
       "MASimple@tv-basicstudies"
 
     ],
+
+    "studies_overrides": {
+
+      "volume.volume.color.0": "#ff5b5b",
+      "volume.volume.color.1": "#00ff95"
+
+    },
 
     "container_id": "tradingview_chart"
 
